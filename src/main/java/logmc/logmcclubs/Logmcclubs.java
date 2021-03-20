@@ -2,6 +2,9 @@ package logmc.logmcclubs;
 
 import com.google.inject.Inject;
 import logmc.logmcclubs.commands.ClubCommand;
+import logmc.logmcclubs.facades.ClubFacade;
+import logmc.logmcclubs.facades.ClubMessagingFacade;
+import logmc.logmcclubs.services.ClubService;
 import org.slf4j.Logger;
 import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
@@ -19,14 +22,34 @@ import org.spongepowered.api.command.spec.CommandSpec;
         url = "https://logmc.eu",
         authors = {
                 "Mischa"
-        }
+        },
+        version = "1.0.0"
 )
 public class Logmcclubs {
 
     private static Logmcclubs instance;
+    private Components components;
 
     @Inject
     private Logger logger;
+
+    @Listener
+    public void onServerStart(GameStartedServerEvent event) {
+        logger.info("Starting LogMC Clubs...");
+    }
+
+    @Listener
+    public void onGameLoaded(GameLoadCompleteEvent event) {
+        instance = this;
+
+        loaded();
+    }
+
+    private void init() {
+        instance = this;
+
+        components = new Components();
+    }
 
     public void loaded() {
         registerCommands();
@@ -42,15 +65,30 @@ public class Logmcclubs {
         Sponge.getCommandManager().register(instance, clubCommandSpec, "club", "cl");
     }
 
-    @Listener
-    public void onServerStart(GameStartedServerEvent event) {
-        logger.info("Starting LogMC Clubs...");
+    public static Logmcclubs getInstance() {
+        return instance;
     }
 
-    @Listener
-    public void onGameLoaded(GameLoadCompleteEvent event) {
-        instance = this;
+    public ClubFacade getClubFacade() {
+        return components.clubFacade;
+    }
 
-        loaded();
+    public ClubService getClubService() {
+        return components.clubService;
+    }
+
+    public ClubMessagingFacade getClubMessagingFacade() {
+        return components.clubMessagingFacade;
+    }
+
+    private static class Components {
+        @Inject
+        private ClubFacade clubFacade;
+
+        @Inject
+        private ClubService clubService;
+
+        @Inject
+        private ClubMessagingFacade clubMessagingFacade;
     }
 }
