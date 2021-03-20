@@ -157,6 +157,16 @@ public final class ClubFacade {
         Question question = Question.of(clubMsg.formatInfo(GOLD, source.getName(), DARK_GREEN, " has invited you to ", club.getName(), "."))
                 .addAnswer(Question.Answer.of(Text.of(GREEN, "Accept"), playerInvitee -> {
                     clubMsg.info(playerInvitee, "You have accepted ", GOLD, source.getName(), "'s", DARK_GREEN, " invite.");
+
+                    Optional<Club> oldClub = getPlayerClub(target);
+                    if (oldClub.isPresent()) {
+                        try {
+                            leaveClub(target);
+                        } catch (Exception e) {
+                            //Something went wrong
+                        }
+                    }
+
                     clubService.addMember(club, target);
                     clubMsg.sendInfoToClub(club, GOLD, playerInvitee.getName(), DARK_GREEN, " has joined ", club.getName(), ".");
                 }))
