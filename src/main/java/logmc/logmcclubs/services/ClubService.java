@@ -26,7 +26,7 @@ public final class ClubService {
         return Optional.ofNullable(idClubs.get(clubUUID));
     }
 
-    public Optional<Club> getClub(String clubName) { return  Optional.ofNullable(nameClubs.get(clubName));}
+    public Optional<Club> getClub(String clubName) { return  Optional.ofNullable(nameClubs.get(clubName.toLowerCase()));}
 
     public Collection<User> getClubMembers(Club club) {
         return club.getMembers().stream()
@@ -54,7 +54,7 @@ public final class ClubService {
     public void removeClub(Club club) {
         getClubMembers(club).forEach(member -> removeMember(club, member));
         idClubs.remove(club.getId());
-        nameClubs.remove(club.getName());
+        nameClubs.remove(club.getName().toLowerCase());
     }
 
     public Club createClub(User leader, String name, User... members) {
@@ -66,7 +66,7 @@ public final class ClubService {
         }
 
         idClubs.put(club.getId(), club);
-        nameClubs.put(club.getName(), club);
+        nameClubs.put(club.getName().toLowerCase(), club);
 
         return club;
     }
