@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 
 @Aliases({"list"})
 @Permission("logmcclubs.club.list")
-@Description("Lists the club")
+@Description("Lists the clubs")
 
 public class ClubListCommand implements PlayerCommand{
 
