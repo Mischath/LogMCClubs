@@ -12,6 +12,7 @@ import logmc.logmcclubs.utils.Question;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.entity.projectile.ProjectileLauncher;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageReceiver;
@@ -35,6 +36,13 @@ public final class ClubFacade {
 
     public boolean isPlayerClubLeader(Player source, Club club) {
         return  source.getUniqueId().equals(club.getLeader());
+    }
+
+    public void createClub(Player source, String name) throws ClubCommandException {
+        if (isPlayerInClub(source)){
+            throw new ClubCommandException("You are already in a club!");
+        }
+        Club club = clubService.createClub(source, name);
     }
 
     public void disbandClub(Player source) throws ClubCommandException {
@@ -61,6 +69,11 @@ public final class ClubFacade {
                 throw ClubCommandException.notLeader();
             }
         }
+    }
+
+    public boolean isPlayerInClub(Player source) {
+        Optional<Club> club = getPlayerClub(source);
+        return club.isPresent();
     }
 
     public void leaveClub(Player source) throws ClubCommandException {
@@ -110,18 +123,42 @@ public final class ClubFacade {
         }
     }
 
+    public void inviteToClub(Player source, Player target) throws ClubCommandException{
+        Optional<Club> invClub = getPlayerClub(source);
+
+        if (invClub.isPresent()) {
+            Club club = invClub.get();
+
+            if (club.getMembers().contains(target.getUniqueId())) {
+                throw new ClubCommandException(target.getName(), " is already in your club.");
+            }
+
+            if (isPlayerClubLeader(source, club)) {
+                invite(source, target, club);
+            } else {
+                throw ClubCommandException.notLeader();
+            }
+        } else {
+            throw ClubCommandException.noClub();
+        }
+    }
+
     public void invite(Player source, Player target, Club club) {
-        Question question = Question.of(clubMsg.formatInfo(GOLD, source.getName(), DARK_GREEN, " has invited you to their club."))
+        Question question = Question.of(clubMsg.formatInfo(GOLD, source.getName(), DARK_GREEN, " has invited you to ", club.getName(), "."))
                 .addAnswer(Question.Answer.of(Text.of(GREEN, "Accept"), playerInvitee -> {
                     clubMsg.info(playerInvitee, "You have accepted ", GOLD, source.getName(), "'s", DARK_GREEN, " invite.");
                     clubService.addMember(club, target);
-                    clubMsg.sendInfoToClub(club, GOLD, playerInvitee.getName(), DARK_GREEN, " has joined the club.");
+                    clubMsg.sendInfoToClub(club, GOLD, playerInvitee.getName(), DARK_GREEN, " has joined ", club.getName(), ".");
                 }))
                 .addAnswer(Question.Answer.of(Text.of(DARK_RED, "Reject"), playerInvitee -> {
                     clubMsg.error(playerInvitee, "You have rejected ", source.getName(), "'s", DARK_GREEN, " invite.");
                     clubMsg.sendErrorToClub(club, playerInvitee.getName(), " has declined the club invite.");
                 }))
                 .build();
+
+        question.pollChat(target);
+
+        clubMsg.sendInfoToClub(club, GOLD, target.getName(), DARK_GREEN, " has been invited to the club.");
     }
 
     public void printPlayerClub(Player source) throws ClubCommandException {

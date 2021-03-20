@@ -49,7 +49,7 @@ public final class ClubService {
         clubs.remove(club.getId());
     }
 
-    public Club createClub(User leader, User... members) {
+    public Club createClub(User leader, String name, User... members) {
         Club club = new Club(leader.getUniqueId(), new HashSet<>());
 
         addMember(club, leader);

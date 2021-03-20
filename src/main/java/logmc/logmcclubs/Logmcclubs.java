@@ -1,16 +1,25 @@
 package logmc.logmcclubs;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import logmc.logmcclubs.commands.ClubCommand;
+import logmc.logmcclubs.commands.helpers.CommandService;
+import logmc.logmcclubs.data.ClubData;
+import logmc.logmcclubs.data.ClubKeys;
 import logmc.logmcclubs.facades.ClubFacade;
 import logmc.logmcclubs.facades.ClubMessagingFacade;
 import logmc.logmcclubs.services.ClubService;
 import org.slf4j.Logger;
+import org.spongepowered.api.data.DataRegistration;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.command.spec.CommandSpec;
 
@@ -30,39 +39,63 @@ public class Logmcclubs {
     private static Logmcclubs instance;
     private Components components;
 
+    private static boolean init = false;
+
     @Inject
     private Logger logger;
+
+    @Inject
+    Injector spongeInjector;
+    private Injector clubInjector;
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
         logger.info("Starting LogMC Clubs...");
     }
 
-    @Listener
-    public void onGameLoaded(GameLoadCompleteEvent event) {
-        instance = this;
-
-        loaded();
-    }
-
     private void init() {
         instance = this;
 
         components = new Components();
+        clubInjector = spongeInjector.createChildInjector(new LogmcclubsModule());
+        clubInjector.injectMembers(components);
+
+        init = true;
     }
 
-    public void loaded() {
-        registerCommands();
-    }
-
-    public void registerCommands() {
-        CommandSpec clubCommandSpec = CommandSpec.builder()
-                .description(Text.of("Show LogMC clubs commands."))
-                .permission("logmcclubs.user.command.base")
-                .executor(new ClubCommand())
+    @Listener
+    public void preInit(GamePreInitializationEvent event) {
+        ClubKeys.CLUB_DATA_REGISTRATION = DataRegistration.builder()
+                .dataClass(ClubData.class)
+                .immutableClass(ClubData.Immutable.class)
+                .builder(new ClubData.Builder())
+                .name("Club")
+                .id("club")
                 .build();
+    }
 
-        Sponge.getCommandManager().register(instance, clubCommandSpec, "club", "cl");
+    private void start() {
+        try {
+            getCommandService().register(new ClubCommand(), this);
+        } catch ( CommandService.AnnotatedCommandException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Listener(order = Order.EARLY)
+    public void onInit(GameInitializationEvent event) {
+        init();
+    }
+
+    @Listener
+    public void onStart(GameInitializationEvent event) {
+        if (init) {
+            start();
+        }
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 
     public static Logmcclubs getInstance() {
@@ -79,6 +112,10 @@ public class Logmcclubs {
 
     public ClubMessagingFacade getClubMessagingFacade() {
         return components.clubMessagingFacade;
+    }
+
+    public static CommandService getCommandService() {
+        return CommandService.getInstance();
     }
 
     private static class Components {

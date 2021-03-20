@@ -9,6 +9,8 @@ public class Club implements SpongeIdentifiable {
 
     private UUID uuid;
 
+    private String name;
+
     private UUID leader;
 
     private Set<UUID> members;
@@ -25,6 +27,14 @@ public class Club implements SpongeIdentifiable {
     @Override
     public UUID getId() {
         return uuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public UUID getLeader() {
