@@ -21,7 +21,7 @@ public class ClubInviteCommand implements PlayerCommand, ParameterizedCommand {
     @Nonnull
     @Override
     public CommandResult execute(@Nonnull Player source, @Nonnull CommandContext args) throws CommandException {
-        Logmcclubs.getInstance().getClubFacade().inviteToClub(source, args.<Player>getOne("invitedPlayer").get());
+        Logmcclubs.getInstance().getClubFacade().inviteToClub(source, args.<Player>getOne("player").get());
 
         return CommandResult.success();
     }
@@ -29,7 +29,7 @@ public class ClubInviteCommand implements PlayerCommand, ParameterizedCommand {
     @Override
     public CommandElement[] getArguments() {
         return new CommandElement[]{
-                GenericArguments.player(Text.of("invitedPlayer"))
+                GenericArguments.player(Text.of("player"))
         };
     }
 }

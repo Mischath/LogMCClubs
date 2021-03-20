@@ -21,7 +21,7 @@ public class ClubKickCommand implements PlayerCommand, ParameterizedCommand {
     @Nonnull
     @Override
     public CommandResult execute(@Nonnull Player source, @Nonnull CommandContext args) throws CommandException {
-        Logmcclubs.getInstance().getClubFacade().kickFromClub(source, args.<Player>getOne("kickedPlayer").get());
+        Logmcclubs.getInstance().getClubFacade().kickFromClub(source, args.<Player>getOne("player").get());
 
         return CommandResult.success();
     }
@@ -29,7 +29,7 @@ public class ClubKickCommand implements PlayerCommand, ParameterizedCommand {
     @Override
     public CommandElement[] getArguments() {
         return new CommandElement[]{
-                GenericArguments.player(Text.of("kickedPlayer"))
+                GenericArguments.player(Text.of("player"))
         };
     }
 }

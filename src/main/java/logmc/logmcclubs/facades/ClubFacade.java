@@ -43,6 +43,7 @@ public final class ClubFacade {
             throw new ClubCommandException("You are already in a club!");
         }
         Club club = clubService.createClub(source, name);
+        clubMsg.sendInfoToClub(club, GOLD, club.getName(), DARK_GREEN, " has been created.");
     }
 
     public void disbandClub(Player source) throws ClubCommandException {
@@ -50,6 +51,9 @@ public final class ClubFacade {
 
         if (isPlayerClubLeader(source, club)) {
             clubMsg.sendErrorToClub(club, "Your club has been disbanded.");
+            clubService.removeClub(club);
+        } else {
+            throw ClubCommandException.notLeader();
         }
     }
 
@@ -125,6 +129,10 @@ public final class ClubFacade {
 
     public void inviteToClub(Player source, Player target) throws ClubCommandException{
         Optional<Club> invClub = getPlayerClub(source);
+
+        if (!Sponge.getServer().getPlayer(target.getUniqueId()).isPresent()) {
+            throw new ClubCommandException("This player is not online or does not exist");
+        }
 
         if (invClub.isPresent()) {
             Club club = invClub.get();
