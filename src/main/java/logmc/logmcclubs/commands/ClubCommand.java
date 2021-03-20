@@ -16,15 +16,12 @@ import javax.annotation.Nonnull;
 
 @Aliases("club")
 @Children({
-        //TODO add children commands.
-        /*
-        PartyInviteCommand.class,
-        PartyKickCommand.class,
-        PartyLeaderCommand.class,
-        PartyLeaveCommand.class,
-        PartyDisbandCommand.class,
-        PartyPvpCommand.class
-        */
+        ClubInviteCommand.class,
+        ClubKickCommand.class,
+        ClubLeaderCommand.class,
+        ClubLeaveCommand.class,
+        ClubDisbandCommand.class,
+        ClubCreateCommand.class
 })
 @HelpCommand(title = "Club Help", command = "help")
 @Permission("logmcclubs.club")
