@@ -50,7 +50,7 @@ public final class ClubService {
     }
 
     public Club createClub(User leader, String name, User... members) {
-        Club club = new Club(leader.getUniqueId(), new HashSet<>());
+        Club club = new Club(leader.getUniqueId(), name, new HashSet<>());
 
         addMember(club, leader);
         for (User member : members) {

@@ -12,6 +12,7 @@ import logmc.logmcclubs.services.ClubService;
 import org.slf4j.Logger;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;

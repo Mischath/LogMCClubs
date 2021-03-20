@@ -15,8 +15,9 @@ public class Club implements SpongeIdentifiable {
 
     private Set<UUID> members;
 
-    public Club(UUID leader, Set<UUID> members) {
+    public Club(UUID leader, String name, Set<UUID> members) {
         this.uuid = UUID.randomUUID();
+        this.name = name;
         this.leader = leader;
         this.members = members;
     }
