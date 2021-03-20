@@ -6,7 +6,7 @@ plugins {
 compileJava.options.encoding = 'UTF-8'
 
 group = 'logmc'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 description = 'LogMC Clubs Sponge plugin for the pixelmon server.'
 
 sourceCompatibility = '1.8'
@@ -14,6 +14,8 @@ targetCompatibility = '1.8'
 
 repositories {
     jcenter()
+    mavenCentral()
+    google()
 }
 
 dependencies {
@@ -24,3 +26,4 @@ dependencies {
 }
 
 sponge.plugin.id = 'logmcclubs'
+
