@@ -14,14 +14,13 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.entity.projectile.ProjectileLauncher;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageReceiver;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.spongepowered.api.text.format.TextColors.*;
@@ -172,6 +171,17 @@ public final class ClubFacade {
     public void printPlayerClub(Player source) throws ClubCommandException {
         Club club = getPlayerClubOrThrow(source);
 
+        printPlayerClub(source, club);
+    }
+
+    public void printPlayerClub(Player source, Club club) throws ClubCommandException {
+
+        PaginationList.Builder builder = PaginationList.builder()
+                .title(Text.of(GOLD, club.getName()))
+                .header(Text.of("Members:"))
+                .padding(Text.of(DARK_GRAY, "="));
+
+        List<Text> contents = new ArrayList<>();
         Text.Builder clubMembers = Text.builder();
 
         Sponge.getServer().getPlayer(club.getLeader()).ifPresent(player -> {
@@ -184,8 +194,9 @@ public final class ClubFacade {
             }
         });
         clubMembers.append(Text.of(DARK_GREEN, "."));
+        contents.add(clubMembers.build());
 
-        clubMsg.info(source, clubMembers.build());
+        builder.contents(contents).sendTo(source);
     }
 
     public Club getPlayerClubOrThrow(Player source) throws ClubCommandException{
