@@ -14,7 +14,7 @@ import org.spongepowered.api.command.source.ConsoleSource;
 
 import javax.annotation.Nonnull;
 
-@Aliases("party")
+@Aliases("club")
 @Children({
         //TODO add children commands.
         /*
