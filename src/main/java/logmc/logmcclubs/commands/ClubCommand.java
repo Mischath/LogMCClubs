@@ -21,7 +21,9 @@ import javax.annotation.Nonnull;
         ClubLeaderCommand.class,
         ClubLeaveCommand.class,
         ClubDisbandCommand.class,
-        ClubCreateCommand.class
+        ClubCreateCommand.class,
+        ClubInfoCommand.class,
+        ClubListCommand.class
 })
 @HelpCommand(title = "Club Help", command = "help")
 @Permission("logmcclubs.club")

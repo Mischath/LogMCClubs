@@ -37,6 +37,10 @@ public final class ClubService {
 
     }
 
+    public Collection<Club> getClubList() {
+        return idClubs.values();
+    }
+
     public void addMember(Club club, User member) {
         club.addMember(member.getUniqueId());
         member.offer(new ClubData(club.getUniqueId()));

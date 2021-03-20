@@ -10,11 +10,14 @@ import logmc.logmcclubs.exceptions.ClubCommandException;
 import logmc.logmcclubs.services.ClubService;
 import logmc.logmcclubs.utils.Question;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.entity.projectile.ProjectileLauncher;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
+import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.service.pagination.PaginationList;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageReceiver;
 import org.spongepowered.api.text.format.TextColors;
@@ -183,6 +186,25 @@ public final class ClubFacade {
         }
     }
 
+    public void printClubList(Player source) throws ClubCommandException {
+        PaginationList.Builder builder = PaginationList.builder()
+                .title(Text.of(GOLD, "Clubs"))
+                .padding(Text.of(DARK_GRAY, "="));
+
+        List<Text> contents = new ArrayList<>();
+        for (Club club : clubService.getClubList() ) {
+            contents.add(Text.of(
+                    GOLD, club.getName(),
+                    DARK_GREEN, " created by ",
+                    GOLD, getUser(club.getLeader()).getName(),
+                    DARK_GREEN, " with ",
+                    club.getMembers().size(),
+                    " Members"));
+        }
+
+        builder.contents(contents).sendTo(source);
+    }
+
     public void printPlayerClub(Player source, Club club) throws ClubCommandException {
 
         PaginationList.Builder builder = PaginationList.builder()
@@ -206,6 +228,17 @@ public final class ClubFacade {
         contents.add(clubMembers.build());
 
         builder.contents(contents).sendTo(source);
+    }
+
+    public static User getUser(UUID id) throws ClubCommandException {
+        UserStorageService userStorageService = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
+        Optional<User> user = userStorageService.get(id);
+
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new ClubCommandException("User not found!");
+        }
     }
 
     public Club getPlayerClubOrThrow(Player source) throws ClubCommandException{

@@ -14,7 +14,7 @@ import org.spongepowered.api.command.source.ConsoleSource;
 
 import javax.annotation.Nonnull;
 
-@Aliases({"disband", "remove", "disb"})
+@Aliases({"disband"})
 @Permission("logmcclubs.club.disband")
 @Description("Ends the club")
 

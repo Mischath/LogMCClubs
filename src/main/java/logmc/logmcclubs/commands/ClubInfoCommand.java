@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 
 @Aliases({"info"})
 @Permission("logmcclubs.club.info")
-@Description("Creates a club")
+@Description("Displays info for club")
 
 public class ClubInfoCommand implements PlayerCommand, ParameterizedCommand {
 
@@ -37,7 +37,8 @@ public class ClubInfoCommand implements PlayerCommand, ParameterizedCommand {
     @Override
     public CommandElement[] getArguments() {
         return new CommandElement[]{
-                GenericArguments.string(Text.of("club"))
+                GenericArguments.string(Text.of("club")),
+                GenericArguments.string(Text.of("player"))
         };
     }
 }

@@ -12,7 +12,7 @@ import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nonnull;
 
-@Aliases({"invite", "inv"})
+@Aliases({"invite"})
 @Permission("logmcclubs.club.invite")
 @Description("Invites player to the club")
 
