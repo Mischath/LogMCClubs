@@ -37,8 +37,7 @@ public class ClubInfoCommand implements PlayerCommand, ParameterizedCommand {
     @Override
     public CommandElement[] getArguments() {
         return new CommandElement[]{
-                GenericArguments.string(Text.of("club")),
-                GenericArguments.string(Text.of("player"))
+                GenericArguments.string(Text.of("club"))
         };
     }
 }
