@@ -174,6 +174,15 @@ public final class ClubFacade {
         printPlayerClub(source, club);
     }
 
+    public Club getClub(String name) throws ClubCommandException {
+        Optional<Club> club = clubService.getClub(name);
+        if (club.isPresent()) {
+            return club.get();
+        } else {
+            throw new ClubCommandException("No such club exists");
+        }
+    }
+
     public void printPlayerClub(Player source, Club club) throws ClubCommandException {
 
         PaginationList.Builder builder = PaginationList.builder()

@@ -19,11 +19,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public final class ClubService {
-    private Map<UUID, Club> clubs = new HashMap<>();
+    private Map<UUID, Club> idClubs = new HashMap<>();
+    private Map<String, Club> nameClubs = new HashMap<>();
 
     public Optional<Club> getClub(UUID clubUUID) {
-        return Optional.ofNullable(clubs.get(clubUUID));
+        return Optional.ofNullable(idClubs.get(clubUUID));
     }
+
+    public Optional<Club> getClub(String clubName) { return  Optional.ofNullable(nameClubs.get(clubName));}
 
     public Collection<User> getClubMembers(Club club) {
         return club.getMembers().stream()
@@ -46,7 +49,8 @@ public final class ClubService {
 
     public void removeClub(Club club) {
         getClubMembers(club).forEach(member -> removeMember(club, member));
-        clubs.remove(club.getId());
+        idClubs.remove(club.getId());
+        nameClubs.remove(club.getName());
     }
 
     public Club createClub(User leader, String name, User... members) {
@@ -57,7 +61,8 @@ public final class ClubService {
             addMember(club, member);
         }
 
-        clubs.put(club.getId(), club);
+        idClubs.put(club.getId(), club);
+        nameClubs.put(club.getName(), club);
 
         return club;
     }
