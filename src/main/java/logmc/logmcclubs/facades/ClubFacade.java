@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import logmc.logmcclubs.commands.ClubCommand;
 import logmc.logmcclubs.data.ClubData;
+import logmc.logmcclubs.data.ClubsManager;
 import logmc.logmcclubs.entities.Club;
 import logmc.logmcclubs.entities.SpongeIdentifiable;
 import logmc.logmcclubs.exceptions.ClubCommandException;

@@ -1,6 +1,7 @@
 package logmc.logmcclubs.services;
 
 import logmc.logmcclubs.data.ClubData;
+import logmc.logmcclubs.data.ClubsManager;
 import logmc.logmcclubs.entities.Club;
 
 import logmc.logmcclubs.utils.UserUtils;
@@ -28,6 +29,22 @@ public final class ClubService {
 
     public Optional<Club> getClub(String clubName) { return  Optional.ofNullable(nameClubs.get(clubName.toLowerCase()));}
 
+    public void setIdClubs(Map<UUID, Club> idClubs) {
+        this.idClubs = idClubs;
+    }
+
+    public void setNameClubs(Map<String, Club> nameClubs) {
+        this.nameClubs = nameClubs;
+    }
+
+    public Map<UUID, Club> getIdClubs() {
+        return idClubs;
+    }
+
+    public Map<String, Club> getNameClubs() {
+        return nameClubs;
+    }
+
     public Collection<User> getClubMembers(Club club) {
         return club.getMembers().stream()
                 .map(UserUtils::getUser)
@@ -44,17 +61,25 @@ public final class ClubService {
     public void addMember(Club club, User member) {
         club.addMember(member.getUniqueId());
         member.offer(new ClubData(club.getUniqueId()));
+        saveClubs();
     }
 
     public void removeMember(Club club, User member) {
         club.removeMember(member.getUniqueId());
         member.remove(ClubData.class);
+        saveClubs();
     }
 
     public void removeClub(Club club) {
         getClubMembers(club).forEach(member -> removeMember(club, member));
         idClubs.remove(club.getId());
         nameClubs.remove(club.getName().toLowerCase());
+    }
+
+    public void saveClubs() {
+        ClubsManager.setNameClubs(nameClubs);
+        ClubsManager.setIdClubs(idClubs);
+        ClubsManager.save();
     }
 
     public Club createClub(User leader, String name, User... members) {
@@ -68,15 +93,18 @@ public final class ClubService {
         idClubs.put(club.getId(), club);
         nameClubs.put(club.getName().toLowerCase(), club);
 
+        saveClubs();
         return club;
     }
 
     public void setClubLeader(Club club, UUID leader) {
         club.setLeader(leader);
+        saveClubs();
     }
 
     public void setRandomClubMemberAsLeader(Club club) {
         UUID newLeader = (UUID)club.getMembers().toArray()[RandomUtils.nextInt(0, club.getMembers().size() - 1)];
         club.setLeader(newLeader);
+        saveClubs();
     }
 }

@@ -6,10 +6,12 @@ import logmc.logmcclubs.commands.ClubCommand;
 import logmc.logmcclubs.commands.helpers.CommandService;
 import logmc.logmcclubs.data.ClubData;
 import logmc.logmcclubs.data.ClubKeys;
+import logmc.logmcclubs.data.ClubsManager;
 import logmc.logmcclubs.facades.ClubFacade;
 import logmc.logmcclubs.facades.ClubMessagingFacade;
 import logmc.logmcclubs.services.ClubService;
 import org.slf4j.Logger;
+import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.GameReloadEvent;
@@ -23,6 +25,10 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.command.spec.CommandSpec;
+
+import javax.swing.text.html.Option;
+import java.nio.file.Path;
+import java.util.Optional;
 
 
 @Plugin(
@@ -43,6 +49,16 @@ public class Logmcclubs {
     private static boolean init = false;
 
     @Inject
+    private PluginContainer container;
+
+    @Inject
+    @ConfigDir(sharedRoot = false)
+    private Path directory;
+    public Path getDirectory() {
+        return directory;
+    }
+
+    @Inject
     private Logger logger;
 
     @Inject
@@ -56,7 +72,6 @@ public class Logmcclubs {
 
     private void init() {
         instance = this;
-
         components = new Components();
         clubInjector = spongeInjector.createChildInjector(new LogmcclubsModule());
         clubInjector.injectMembers(components);
@@ -79,6 +94,13 @@ public class Logmcclubs {
         try {
             getCommandService().register(new ClubCommand(), this);
         } catch ( CommandService.AnnotatedCommandException e) {
+            e.printStackTrace();
+        }
+        try {
+            ClubsManager.readStorage();
+            getClubService().setIdClubs(ClubsManager.getIdClubs());
+            getClubService().setNameClubs(ClubsManager.getNameClubs());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -117,6 +139,10 @@ public class Logmcclubs {
 
     public static CommandService getCommandService() {
         return CommandService.getInstance();
+    }
+
+    public static PluginContainer getContainer() {
+        return instance.container;
     }
 
     private static class Components {

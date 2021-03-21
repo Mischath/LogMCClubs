@@ -20,7 +20,7 @@ import javax.swing.text.html.Option;
 import java.util.Optional;
 import java.util.UUID;
 
-public class ClubData extends  AbstractData<ClubData, ClubData.Immutable> {
+public class ClubData extends AbstractData<ClubData, ClubData.Immutable> {
 
     private UUID clubUUID;
 

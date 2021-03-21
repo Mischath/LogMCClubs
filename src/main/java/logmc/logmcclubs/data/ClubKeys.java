@@ -18,7 +18,7 @@ public class ClubKeys {
                 .type(new TypeToken<Value<UUID>>() {})
                 .id("club")
                 .name("Club")
-                .query(DataQuery.of("logmcscore", "Club"))
+                .query(DataQuery.of("logmcclubs", "Club"))
                 .build();
     }
 }
