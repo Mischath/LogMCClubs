@@ -36,9 +36,11 @@ public class ClubData extends AbstractData<ClubData, ClubData.Immutable> {
 
     @Override
     public void registerGettersAndSetters() {
-        registerFieldGetter(ClubKeys.CLUB, this::getClubUUID);
-        registerFieldSetter(ClubKeys.CLUB, this::setClubUUID);
-        registerKeyValue(ClubKeys.CLUB, this::clubUUID);
+        if (ClubKeys.CLUB != null && clubUUID != null) {
+            registerFieldGetter(ClubKeys.CLUB, this::getClubUUID);
+            registerFieldSetter(ClubKeys.CLUB, this::setClubUUID);
+            registerKeyValue(ClubKeys.CLUB, this::clubUUID);
+        }
     }
 
     public Optional<Club> getClub() {
