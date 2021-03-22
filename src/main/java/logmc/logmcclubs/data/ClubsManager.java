@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 public class ClubsManager {
     private static Path storDir = Logmcclubs.getInstance().getDirectory().resolve("storage");
+    private static Path logsDir = storDir.resolve("logs");
 
     private static Map<UUID, Club> idClubs = new HashMap<>();
     private static Map<String, Club> nameClubs = new HashMap<>();
@@ -53,14 +54,23 @@ public class ClubsManager {
         Gson gson = new Gson();
 
         try {
+            Files.createDirectories(logsDir);
+
+            File file = new File(String.valueOf(storDir.resolve("clubs.json")));
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
             Type listType = new TypeToken<ArrayList<Club>>(){}.getType();
             List<Club> clubList = gson.fromJson(new FileReader(
                     String.valueOf(storDir.resolve("clubs.json"))), listType);
-            for (Club club : clubList) {
-                idClubs.put(club.getId(), club);
-                nameClubs.put(club.getName(), club);
+            if (clubList != null) {
+                for (Club club : clubList) {
+                    idClubs.put(club.getId(), club);
+                    nameClubs.put(club.getName(), club);
+                }
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
